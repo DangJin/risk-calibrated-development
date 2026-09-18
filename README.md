@@ -1,6 +1,6 @@
 <div align="center">
   <h1>Risk-Calibrated Development</h1>
-  <p><strong>Scale software-development process and verification to the actual risk of a change.</strong></p>
+  <p><strong>A development workflow router that matches engineering process and verification effort to the actual risk of a software change.</strong></p>
   <p><a href="README.md">English</a> | <a href="README.zh-CN.md">简体中文</a></p>
   <p>
     <img alt="Agent Skill" src="https://img.shields.io/badge/Agent-Skill-0969DA">
@@ -10,29 +10,52 @@
   </p>
 </div>
 
-This agent skill starts with the least costly workflow and upgrades only when evidence shows greater impact, recovery difficulty, or uncertainty. It keeps routine changes fast without relaxing the safeguards needed for high-risk work.
+Risk-Calibrated Development helps coding agents use the right amount of engineering process—not the most process and not the least.
+
+## Core proposition
+
+> Use the lowest-cost workflow that leaves the residual risk acceptable.
+
+```text
+assurance needed
+= failure likelihood
+× impact
+× recovery difficulty
+× uncertainty
+```
 
 ## Background
 
-Software changes do not all deserve the same process. A copy adjustment and an authentication migration have different failure modes, impact, and rollback costs, yet coding agents often apply one fixed workflow to both.
+Coding agents often apply the same heavyweight workflow to every task.
 
-That creates two common failures: small changes accumulate unnecessary planning and verification, while consequential changes proceed without enough design, rollback preparation, or evidence. Risk-Calibrated Development provides a process router that adjusts the workflow to the change instead of treating every task as equally risky.
+A small spacing change may trigger brainstorming, design approval, test-driven development, full test suites, Docker rebuilds, code reviews, and deployment preparation. Meanwhile, a one-line permission or production configuration change may look simple but carry significant operational risk.
+
+Risk-Calibrated Development addresses this mismatch. It classifies changes by consequence, reversibility, and uncertainty—not by code size, file count, or estimated effort.
 
 ## Problems it solves
 
-- **One-size-fits-all workflows:** prevents every task from inheriting the same ceremony and test burden.
-- **Process inflation:** avoids adding brainstorming, planning, worktrees, full test suites, or reviews when they do not reduce a concrete risk.
-- **Insufficient assurance:** identifies hard gates such as data migration, authentication, privacy, billing, public contracts, and destructive operations.
-- **Unfocused verification:** requires each check to answer a specific failure risk instead of collecting redundant evidence.
-- **Scope and authorization drift:** keeps code changes, local services, Git delivery, and deployment as separate boundaries.
+- Simple UI changes are overdesigned and oververified.
+- Multiple process skills activate together and duplicate work.
+- File count or lines changed are mistaken for risk indicators.
+- Every small change repeats builds, Docker work, commits, or deployment preparation.
+- Existing framework and project capabilities are overlooked before new code is created.
+- A genuinely risky one-line configuration change is underestimated.
+- Agents run unrelated checks merely because they appear safer.
+
+## Design goals
+
+- Keep process cost proportional to actual risk.
+- Start with a lightweight workflow and upgrade only on evidence.
+- Give low-risk changes a fast, direct execution path.
+- Preserve strong safeguards for data, security, and production changes.
+- Make every verification step answer a concrete risk.
+- Prefer framework, dependency, and project capabilities before new implementations.
+- Avoid unrelated refactors, duplicate verification, and stacked process workflows.
+- Preserve authorization boundaries between code changes, Git delivery, and production deployment.
 
 ## How it works
 
-The skill acts as a qualitative risk router. It evaluates four factors:
-
-```text
-assurance needed = failure likelihood × impact × recovery difficulty × uncertainty
-```
+The skill acts as a qualitative risk router. It evaluates the four factors in the core proposition:
 
 | Factor | Question |
 | --- | --- |
@@ -51,47 +74,81 @@ For each task, the skill:
 
 ## Risk levels
 
-| Level | Use when | Process |
-| --- | --- | --- |
-| **Fast** | The change is clear, local, reversible, and low impact | Implement directly and run the narrowest relevant check |
-| **Standard** | The change affects business behavior, shared code, dependencies, configuration, or has an uncertain cause | Confirm the affected contract and run targeted tests and static checks |
-| **Rigorous** | The change involves data, security, privacy, billing, public contracts, infrastructure, destructive work, or broad impact | Confirm design and risk controls before mutation, then verify comprehensively |
+### Fast
+
+Use for clear, local, easily reversible changes, such as:
+
+- Copy, spacing, colors, or icons
+- Local layout changes
+- Small adjustments to an existing component
+
+Default behavior:
+
+- Implement directly.
+- Inspect the target and existing pattern.
+- Review the diff.
+- Run the narrowest relevant static check or UI confirmation.
+- Do not automatically add design approval, TDD, Docker, a full build, Git delivery, or deployment.
+
+### Standard
+
+Use for local business behavior or changes with moderate uncertainty, such as:
+
+- Forms and state management
+- A single API
+- Shared components
+- Dependency or configuration adjustments
+- Bugs without a confirmed cause
+- Interactions spanning multiple screens
+
+Default behavior:
+
+- Establish the cause and affected contract first.
+- Reuse existing implementations where appropriate.
+- Run targeted tests.
+- Run lint or type checks for the affected scope.
+- Ask only when a material product choice cannot be inferred.
+
+### Rigorous
+
+Use when the change has an explicit high-risk signal, such as:
+
+- Schema or data migrations
+- Bulk data mutations
+- Authentication, permissions, or security
+- Privacy, secrets, or billing
+- Public APIs or external contracts
+- Production infrastructure
+- Broad impact or difficult rollback
+
+Default behavior:
+
+- Confirm the design and risks before mutation.
+- Define migration, rollback, and stop conditions.
+- Add reliable tests for testable behavior.
+- Run comprehensive, relevant engineering verification.
+- Validate production changes after deployment when deployment is authorized.
 
 The complete decision rules are defined in [SKILL.md](skills/risk-calibrated-development/SKILL.md).
 
-## Use cases
+## Typical use cases
 
-### 1. Local UI correction — Fast
+| Change | Classification | Key reason |
+| --- | --- | --- |
+| Change button spacing from `8px` to `12px` | Fast | Local, clear, and reversible |
+| Restore pagination state after returning from article editing | Standard | Involves routing and page state |
+| Update button copy across a dozen locale files | Fast | File count does not determine risk |
+| Change the default role for new users to administrator | Rigorous | Permission and security risk |
+| Bulk-publish historical drafts | Rigorous | Bulk mutation of production data |
+| Change the default sort order of a public API | Rigorous | External contract and pagination stability |
 
-```text
-Use $risk-calibrated-development to align this icon with the existing button pattern.
-```
-
-Expected behavior: inspect the existing component, make the smallest local change, review the diff, and confirm the affected UI or narrow check. No broad test suite or design phase is added.
-
-### 2. Shared form or API behavior — Standard
-
-```text
-Use $risk-calibrated-development to add this validation rule to the shared signup form and API.
-```
-
-Expected behavior: define the affected validation contract, inspect all relevant callers, keep client and server behavior consistent, and run targeted tests plus affected static checks.
-
-### 3. Bug with an uncertain cause — Standard
+Example prompts:
 
 ```text
-Use $risk-calibrated-development to diagnose and fix this intermittent state synchronization bug.
+Use $risk-calibrated-development to change this button spacing from 8px to 12px.
+Use $risk-calibrated-development to preserve pagination after returning from article editing.
+Use $risk-calibrated-development to change the default role assigned to new users.
 ```
-
-Expected behavior: establish the cause before changing behavior, identify the affected state contract, add focused regression evidence, and verify the impacted paths.
-
-### 4. Migration, authentication, or billing change — Rigorous
-
-```text
-Use $risk-calibrated-development to migrate this user table while preserving authentication and billing data.
-```
-
-Expected behavior: confirm the design before mutation, define rollback and migration controls, protect sensitive data and external contracts, and run comprehensive relevant verification. Deployment remains a separate authorization step.
 
 ## Installation
 
@@ -115,13 +172,53 @@ Use $risk-calibrated-development to implement this change with proportionate pro
 
 Compatible agent environments may also invoke it automatically. The bundled OpenAI agent configuration enables implicit invocation.
 
-## Design principles
+## Capability reuse order
 
-- Start with Fast and upgrade only when evidence justifies it.
-- Reuse platform and project capabilities before creating new implementations.
-- Match verification cost to failure likelihood, impact, recovery difficulty, and uncertainty.
-- Treat code changes, local services, Git delivery, and deployment as separate authorization boundaries.
-- Avoid stacking heavyweight process workflows when a narrower safeguard is sufficient.
+Before creating a new implementation, inspect capabilities in this order:
+
+```text
+Platform / framework / library
+→ Existing project implementation
+→ Adapt an existing capability
+→ Create a local implementation
+→ Introduce an external dependency
+```
+
+Stop when an option satisfies the requirement and belongs at the correct ownership boundary.
+
+## Relationship to other skills
+
+Risk-Calibrated Development is a process router, not a replacement for domain skills.
+
+Image, document, Figma, browser-control, and framework-specific skills continue to operate normally. Process capabilities such as brainstorming, TDD, implementation planning, worktrees, code review, and full verification are selected according to the risk level. An explicitly requested user workflow always takes precedence.
+
+## Delivery boundaries
+
+The skill treats these operations as separate authorization boundaries:
+
+- Modify code
+- Update local services or Docker
+- Commit, push, or create a pull request
+- Deploy to production
+
+Starting a code change does not automatically authorize a commit, push, or deployment. When the user explicitly requests complete delivery, repeated builds and deployments are batched at the end of the requested scope.
+
+## Non-goals
+
+This skill does not:
+
+- Replace a project's own engineering standards
+- Reduce required security or data safeguards
+- Force every project to use the same test tools
+- Generate a design document for every task
+- Grant permission for Git, deployment, or production data operations
+- Manage pure research, copywriting, or read-only analysis tasks
+
+## Project positioning
+
+> This is not a “skip the process” skill. It is a “use the right amount of process” skill.
+
+The goal is not to make coding agents always choose the fastest path. It removes ineffective process while preserving engineering safeguards proportional to the actual risk.
 
 ## Repository structure
 
