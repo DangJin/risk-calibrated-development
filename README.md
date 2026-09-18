@@ -1,12 +1,48 @@
 # Risk-Calibrated Development
 
-An agent skill that scales software-development process and verification to the risk of a change.
+Scale software-development process and verification to the actual risk of a change.
 
-It starts with the least costly workflow and upgrades only when evidence shows greater impact, recovery difficulty, or uncertainty. The skill defines three levels:
+This agent skill starts with the least costly workflow and upgrades only when evidence shows greater impact, recovery difficulty, or uncertainty. It keeps routine changes fast without relaxing the safeguards needed for high-risk work.
 
-- **Fast** for clear, local, reversible changes.
-- **Standard** for business behavior, shared code, dependencies, configuration, or uncertain defects.
-- **Rigorous** for migrations, security, privacy, billing, public contracts, infrastructure, destructive work, or broad impact.
+## Risk levels
+
+| Level | Use when | Process |
+| --- | --- | --- |
+| **Fast** | The change is clear, local, reversible, and low impact | Implement directly and run the narrowest relevant check |
+| **Standard** | The change affects business behavior, shared code, dependencies, configuration, or has an uncertain cause | Confirm the affected contract and run targeted tests and static checks |
+| **Rigorous** | The change involves data, security, privacy, billing, public contracts, infrastructure, destructive work, or broad impact | Confirm design and risk controls before mutation, then verify comprehensively |
+
+The complete decision rules are defined in [SKILL.md](skills/risk-calibrated-development/SKILL.md).
+
+## Installation
+
+Clone the repository and copy the skill into your agent environment. For Codex:
+
+```bash
+git clone https://github.com/DangJin/risk-calibrated-development.git
+mkdir -p ~/.codex/skills
+cp -R risk-calibrated-development/skills/risk-calibrated-development ~/.codex/skills/
+```
+
+Restart the agent environment if it does not automatically discover newly installed skills.
+
+## Usage
+
+Invoke the skill explicitly in your prompt:
+
+```text
+Use $risk-calibrated-development to implement this change with proportionate process and verification.
+```
+
+Compatible agent environments may also invoke it automatically. The bundled OpenAI agent configuration enables implicit invocation.
+
+## Design principles
+
+- Start with Fast and upgrade only when evidence justifies it.
+- Reuse platform and project capabilities before creating new implementations.
+- Match verification cost to failure likelihood, impact, recovery difficulty, and uncertainty.
+- Treat code changes, local services, Git delivery, and deployment as separate authorization boundaries.
+- Avoid stacking heavyweight process workflows when a narrower safeguard is sufficient.
 
 ## Repository structure
 
@@ -18,27 +54,12 @@ skills/
         └── openai.yaml
 ```
 
-## Install
+## Support and contributions
 
-Copy `skills/risk-calibrated-development` into the skills directory used by your agent environment. For example, with Codex:
+Use [GitHub Issues](https://github.com/DangJin/risk-calibrated-development/issues) to report problems or propose improvements. Pull requests should keep the workflow proportionate, deterministic, and compatible with the existing skill contract.
 
-```bash
-mkdir -p ~/.codex/skills
-cp -R skills/risk-calibrated-development ~/.codex/skills/
-```
-
-Restart the agent environment if it does not automatically discover newly installed skills.
-
-## Use
-
-Invoke the skill explicitly when you want the development workflow calibrated to the change risk:
-
-```text
-Use $risk-calibrated-development to implement this change with proportionate process and verification.
-```
-
-The skill also allows implicit invocation in compatible agent environments.
+Maintained by [@DangJin](https://github.com/DangJin).
 
 ## License
 
-No license has been granted yet. All rights are reserved unless a license file is added.
+No license has been granted. All rights are reserved unless a license file is added.
