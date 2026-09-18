@@ -1,6 +1,14 @@
-# Risk-Calibrated Development
-
-Scale software-development process and verification to the actual risk of a change.
+<div align="center">
+  <h1>Risk-Calibrated Development</h1>
+  <p><strong>Scale software-development process and verification to the actual risk of a change.</strong></p>
+  <p><a href="README.md">English</a> | <a href="README.zh-CN.md">简体中文</a></p>
+  <p>
+    <img alt="Agent Skill" src="https://img.shields.io/badge/Agent-Skill-0969DA">
+    <img alt="Risk-Calibrated Workflow" src="https://img.shields.io/badge/Workflow-Risk--Calibrated-1F883D">
+    <img alt="Codex Compatible" src="https://img.shields.io/badge/Codex-Compatible-6F42C1">
+    <img alt="Fast, Standard, and Rigorous levels" src="https://img.shields.io/badge/Levels-Fast%20%7C%20Standard%20%7C%20Rigorous-D97706">
+  </p>
+</div>
 
 This agent skill starts with the least costly workflow and upgrades only when evidence shows greater impact, recovery difficulty, or uncertainty. It keeps routine changes fast without relaxing the safeguards needed for high-risk work.
 
