@@ -1,0 +1,6 @@
+interface:
+  display_name: "Risk-Calibrated Development"
+  short_description: "Match development process and verification to change risk"
+  default_prompt: "Use $risk-calibrated-development to implement this change with proportionate process and verification."
+policy:
+  allow_implicit_invocation: true
