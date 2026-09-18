@@ -1,5 +1,6 @@
 <div align="center">
   <h1>Risk-Calibrated Development</h1>
+  <p><img src="assets/risk-calibrated-development-banner.png" alt="Risk-Calibrated Development workflow banner" width="100%"></p>
   <p><strong>A development workflow router that matches engineering process and verification effort to the actual risk of a software change.</strong></p>
   <p><a href="README.md">English</a> | <a href="README.zh-CN.md">简体中文</a></p>
   <p>

@@ -1,5 +1,6 @@
 <div align="center">
   <h1>Risk-Calibrated Development</h1>
+  <p><img src="assets/risk-calibrated-development-banner.png" alt="Risk-Calibrated Development 风险工作流横幅" width="100%"></p>
   <p><strong>根据软件变更的真实风险，选择恰当的设计、测试、审查和交付流程。</strong></p>
   <p><a href="README.md">English</a> | <a href="README.zh-CN.md">简体中文</a></p>
   <p>
